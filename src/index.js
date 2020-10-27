@@ -30,10 +30,12 @@ class QuantumTile extends PIXI.Sprite {
         super(texture);
 
         this.cyclePositionTexture = this.cyclePositionTexture.bind(this);
-
+        // Posibilties and States
+        this.collapsed = false;
         this.states = tileOptions.states;
         this.posibilities = {...this.states};
         this.posibilitiesArray = Object.values(this.states);
+        this.neighbors = {};
 
         // CyclePositions
         this.cyclePositions = true;
@@ -51,10 +53,9 @@ class QuantumTile extends PIXI.Sprite {
                 let i = this.cyclePositionIndex
                 let key = Object.keys(this.posibilities)[i];
                 let chosen = this.posibilities[key];
-                this.posibilities = {
-                    key: chosen
-                };
+                this.posibilities = { key: chosen };
                 this.posibilitiesArray = [chosen];
+                this.collapsed = true;
                 this.cyclePositions = false;
                 this.interactive = false;
                 this.onCollapse();
@@ -244,10 +245,11 @@ app.loader.load((loader, resources) => {
             }
         },
     }
-
+    const gridSize = 10;
     let grid = {};
-    for (let x = 0; x < 10; x += 1) {
-        for (let y = 0; y < 10; y += 1) {
+    // Populate grid
+    for (let x = 0; x < gridSize; x += 1) {
+        for (let y = 0; y < gridSize; y += 1) {
             grid[`${x}x${y}y`] = new QuantumTile(states.air.texture, {
                 states: states
             });
@@ -256,6 +258,40 @@ app.loader.load((loader, resources) => {
             grid[`${x}x${y}y`].x = x*8*4;
             grid[`${x}x${y}y`].y = y*8*4;
             app.stage.addChild(grid[`${x}x${y}y`]);
+        }
+    }
+    console.log(grid)
+    // Link grid tiles
+    for (let x = 0; x < gridSize; x += 1) {
+        for (let y = 0; y < gridSize; y += 1) {
+            // Left
+            if(
+                grid[`${x - 1}x${y}y`] !== undefined 
+                && grid[`${x - 1}x${y}y`].collapsed === false
+            ) {
+                grid[`${x}x${y}y`].neighbors.left = grid[`${x - 1}x${y}y`];
+            }
+            // Right
+            if(
+                grid[`${x + 1}x${y}y`] !== undefined 
+                && grid[`${x + 1}x${y}y`].collapsed === false
+            ) {
+                grid[`${x}x${y}y`].neighbors.right = grid[`${x + 1}x${y}y`];
+            }
+            //Above
+            if(
+                grid[`${x}x${y - 1}y`] !== undefined 
+                && grid[`${x}x${y - 1}y`].collapsed === false
+            ) {
+                grid[`${x}x${y}y`].neighbors.top = grid[`${x}x${y - 1}y`];
+            }
+            // Bellow
+            if(
+                grid[`${x}x${y + 1}y`] !== undefined 
+                && grid[`${x}x${y + 1}y`].collapsed === false
+            ) {
+                grid[`${x}x${y}y`].neighbors.bottom = grid[`${x}x${y + 1}y`];
+            }
         }
     }
     // let tiles = PIXI.Sprite.from(resources.tilesheet.texture);
