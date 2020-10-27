@@ -10,7 +10,8 @@
     "webpack-dev": "webpack-dev-server --mode=development"
   },
   "dependencies": {
-    "pixi.js": "^5.0.0-rc.2"
+    "pixi.js": "^5.0.0-rc.2",
+    "puxi.js": "0.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
