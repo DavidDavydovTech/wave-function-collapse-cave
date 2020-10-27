@@ -41,6 +41,8 @@ class QuantumTile extends PIXI.Sprite {
         this.cyclePositionIndex = Math.floor(Math.random() * (this.posibilitiesArray.length - 1));
         this.cyclePositionTexture();
 
+        // Listener
+        this.onCollapse = () => {};
         // Button-mode
         this.interactive = true;
         this.buttonMode = true;
@@ -55,6 +57,7 @@ class QuantumTile extends PIXI.Sprite {
                 this.posibilitiesArray = [chosen];
                 this.cyclePositions = false;
                 this.interactive = false;
+                this.onCollapse();
             }
         });
     }
