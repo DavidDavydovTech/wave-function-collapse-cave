@@ -53,8 +53,14 @@ app.loader.load((loader, resources) => {
             autoAccept: false,
             rules: {
                 top: {},
-                left: {},
-                right: {},
+                left: {
+                    air: false,
+                    grassTopLeft: true,
+                },
+                right: {
+                    air: false,
+                    grassTopRight: true,
+                },
                 bottom: {},
             }
         },
@@ -64,8 +70,14 @@ app.loader.load((loader, resources) => {
             rules: {
                 top: {},
                 left: {},
-                right: {},
-                bottom: {},
+                right: {
+                    air: false,
+                    grassTop: true,
+                },
+                bottom: {
+                    air: false,
+                    grassLeft: true,
+                },
             }
         },
         grassTopRight: {
@@ -73,29 +85,47 @@ app.loader.load((loader, resources) => {
             autoAccept: false,
             rules: {
                 top: {},
-                left: {},
+                left: {
+                    air: false,
+                    grassTop: true,
+                },
                 right: {},
-                bottom: {},
+                bottom: {
+                    air: false,
+                    grassRight: true,
+                },
             }
         },
         grassLeft: {
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,16,8,8)),
             autoAccept: false,
             rules: {
-                top: {},
+                top: {
+                    air: false,
+                    grassTopLeft: true,
+                },
                 left: {},
                 right: {},
-                bottom: {},
+                bottom: {
+                    air: false,
+                    grassBottomLeft: true,
+                },
             }
         },
         grassRight: {
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,16,8,8), undefined, undefined, 12),
             autoAccept: false,
             rules: {
-                top: {},
+                top: {
+                    air: false,
+                    grassTopRight: true,
+                },
                 left: {},
                 right: {},
-                bottom: {},
+                bottom: {
+                    air: false,
+                    grassBottomRight: true,
+                },
             }
         },
         grassBottom: {
@@ -103,8 +133,14 @@ app.loader.load((loader, resources) => {
             autoAccept: false,
             rules: {
                 top: {},
-                left: {},
-                right: {},
+                left: {
+                    air: false,
+                    grassBottomLeft: true,
+                },
+                right: {
+                    air: false,
+                    grassBottomRight: true,
+                },
                 bottom: {},
             }
         },
@@ -112,9 +148,15 @@ app.loader.load((loader, resources) => {
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,24,8,8)),
             autoAccept: false,
             rules: {
-                top: {},
+                top: {
+                    air: false,
+                    grassLeft: true,
+                },
                 left: {},
-                right: {},
+                right: {
+                    air: false,
+                    grassBottom: true,
+                },
                 bottom: {},
             }
         },
@@ -122,18 +164,25 @@ app.loader.load((loader, resources) => {
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,24,8,8), undefined, undefined, 12),
             autoAccept: false,
             rules: {
-                top: {},
-                left: {},
+                top: {
+                    air: false,
+                    grassRight: true,
+                },
+                left: {
+                    air: false,
+                    grassBottom: true,
+                },
                 right: {},
                 bottom: {},
             }
         },
     }
-    let tiles = PIXI.Sprite.from(resources.tilesheet.texture);
-    tiles.scale.x = 4
-    tiles.scale.y = 4
-    tiles.x = 128;
-    tiles.y = 128;
+
+    // let tiles = PIXI.Sprite.from(resources.tilesheet.texture);
+    // tiles.scale.x = 4
+    // tiles.scale.y = 4
+    // tiles.x = 128;
+    // tiles.y = 128;
     app.stage.addChild(tiles);
 });
 
