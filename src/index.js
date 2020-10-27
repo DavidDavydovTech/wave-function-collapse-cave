@@ -79,133 +79,135 @@ app.loader.load((loader, resources) => {
                 left: {
                     air: false,
                     grassTopLeft: true,
+                    grassTop: true,
                 },
                 right: {
                     air: false,
                     grassTopRight: true,
-                },
-                bottom: {},
-            }
-        },
-        grassTopLeft: {
-            name: 'grassTopLeft',
-            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,8,8,8)),
-            autoAccept: false,
-            rules: {
-                top: {},
-                left: {},
-                right: {
-                    air: false,
                     grassTop: true,
                 },
-                bottom: {
-                    air: false,
-                    grassLeft: true,
-                },
-            }
-        },
-        grassTopRight: {
-            name: 'grassTopRight',
-            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,8,8,8), undefined, undefined, 12),
-            autoAccept: false,
-            rules: {
-                top: {},
-                left: {
-                    air: false,
-                    grassTop: true,
-                },
-                right: {},
-                bottom: {
-                    air: false,
-                    grassRight: true,
-                },
-            }
-        },
-        grassLeft: {
-            name: 'grassLeft',
-            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,16,8,8)),
-            autoAccept: false,
-            rules: {
-                top: {
-                    air: false,
-                    grassTopLeft: true,
-                },
-                left: {},
-                right: {},
-                bottom: {
-                    air: false,
-                    grassBottomLeft: true,
-                },
-            }
-        },
-        grassRight: {
-            name: 'grassRight',
-            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,16,8,8), undefined, undefined, 12),
-            autoAccept: false,
-            rules: {
-                top: {
-                    air: false,
-                    grassTopRight: true,
-                },
-                left: {},
-                right: {},
-                bottom: {
-                    air: false,
-                    grassBottomRight: true,
-                },
-            }
-        },
-        grassBottom: {
-            name: 'grassBottom',
-            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(8,24,8,8)),
-            autoAccept: false,
-            rules: {
-                top: {},
-                left: {
-                    air: false,
-                    grassBottomLeft: true,
-                },
-                right: {
-                    air: false,
-                    grassBottomRight: true,
-                },
                 bottom: {},
             }
         },
-        grassBottomLeft: {
-            name: 'grassBottomLeft',
-            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,24,8,8)),
-            autoAccept: false,
-            rules: {
-                top: {
-                    air: false,
-                    grassLeft: true,
-                },
-                left: {},
-                right: {
-                    air: false,
-                    grassBottom: true,
-                },
-                bottom: {},
-            }
-        },
-        grassBottomRight: {
-            name: 'grassBottomRight',
-            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,24,8,8), undefined, undefined, 12),
-            autoAccept: false,
-            rules: {
-                top: {
-                    air: false,
-                    grassRight: true,
-                },
-                left: {
-                    air: false,
-                    grassBottom: true,
-                },
-                right: {},
-                bottom: {},
-            }
-        },
+        // grassTopLeft: {
+        //     name: 'grassTopLeft',
+        //     texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,8,8,8)),
+        //     autoAccept: false,
+        //     rules: {
+        //         top: {},
+        //         left: {},
+        //         right: {
+        //             air: false,
+        //             grassTop: true,
+        //         },
+        //         bottom: {
+        //             air: false,
+        //             grassLeft: true,
+        //         },
+        //     }
+        // },
+        // grassTopRight: {
+        //     name: 'grassTopRight',
+        //     texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,8,8,8), undefined, undefined, 12),
+        //     autoAccept: false,
+        //     rules: {
+        //         top: {},
+        //         left: {
+        //             air: false,
+        //             grassTop: true,
+        //         },
+        //         right: {},
+        //         bottom: {
+        //             air: false,
+        //             grassRight: true,
+        //         },
+        //     }
+        // },
+        // grassLeft: {
+        //     name: 'grassLeft',
+        //     texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,16,8,8)),
+        //     autoAccept: false,
+        //     rules: {
+        //         top: {
+        //             air: false,
+        //             grassTopLeft: true,
+        //         },
+        //         left: {},
+        //         right: {},
+        //         bottom: {
+        //             air: false,
+        //             grassBottomLeft: true,
+        //         },
+        //     }
+        // },
+        // grassRight: {
+        //     name: 'grassRight',
+        //     texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,16,8,8), undefined, undefined, 12),
+        //     autoAccept: false,
+        //     rules: {
+        //         top: {
+        //             air: false,
+        //             grassTopRight: true,
+        //         },
+        //         left: {},
+        //         right: {},
+        //         bottom: {
+        //             air: false,
+        //             grassBottomRight: true,
+        //         },
+        //     }
+        // },
+        // grassBottom: {
+        //     name: 'grassBottom',
+        //     texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(8,24,8,8)),
+        //     autoAccept: false,
+        //     rules: {
+        //         top: {},
+        //         left: {
+        //             air: false,
+        //             grassBottomLeft: true,
+        //         },
+        //         right: {
+        //             air: false,
+        //             grassBottomRight: true,
+        //         },
+        //         bottom: {},
+        //     }
+        // },
+        // grassBottomLeft: {
+        //     name: 'grassBottomLeft',
+        //     texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,24,8,8)),
+        //     autoAccept: false,
+        //     rules: {
+        //         top: {
+        //             air: false,
+        //             grassLeft: true,
+        //         },
+        //         left: {},
+        //         right: {
+        //             air: false,
+        //             grassBottom: true,
+        //         },
+        //         bottom: {},
+        //     }
+        // },
+        // grassBottomRight: {
+        //     name: 'grassBottomRight',
+        //     texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,24,8,8), undefined, undefined, 12),
+        //     autoAccept: false,
+        //     rules: {
+        //         top: {
+        //             air: false,
+        //             grassRight: true,
+        //         },
+        //         left: {
+        //             air: false,
+        //             grassBottom: true,
+        //         },
+        //         right: {},
+        //         bottom: {},
+        //     }
+        // },
     }
     const gridSize = 10;
     let grid = {};
