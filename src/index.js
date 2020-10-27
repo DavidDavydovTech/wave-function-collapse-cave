@@ -24,24 +24,20 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST; // Forces pixel art to stay
 app.loader
     .add('tilesheet', 'img/cavesofgallet_tiles.png'); // Main tilesheet.
 
+// State Class:
+class State {
+    constructor(name, texture, rules) {
+        this.name = name;
+        this.texture = texture;
+        this.rules = rules;
+    }
+
+    
+}
 // Tile Class:
 class QuantumTile extends PIXI.Sprite {
     constructor(texture, tileOptions) {
         super(texture);
-
-        this.cyclePositionTexture = this.cyclePositionTexture.bind(this);
-        // Posibilties and States
-        this.collapsed = false;
-        this.states = tileOptions.states;
-        this.posibilities = {...this.states};
-        this.posibilitiesArray = Object.values(this.states);
-        this.neighbors = {};
-
-        // CyclePositions
-        this.cyclePositions = true;
-        this.cyclePositionTimer = 0;
-        this.cyclePositionIndex = Math.floor(Math.random() * (this.posibilitiesArray.length - 1));
-        this.cyclePositionTexture();
 
         // Listener
         this.onCollapse = () => {};
@@ -49,81 +45,17 @@ class QuantumTile extends PIXI.Sprite {
         this.interactive = true;
         this.buttonMode = true;
         this.on('pointerdown', () => {
-            if (this.cyclePositions = true) {
-                let i = this.cyclePositionIndex
-                let key = Object.keys(this.posibilities)[i];
-                let chosen = this.posibilities[key];
-                this.posibilities = {};
-                this.posibilities[key] = chosen 
-                this.posibilitiesArray = [chosen];
-                this.collapsed = true;
-                this.cyclePositions = false;
-                this.interactive = false;
-                this.texture = chosen.texture;
-                if (typeof this.neighbors.left === 'object' && this.neighbors.left.collapsed === false) {
-                    this.neighbors.left.updatePosibilities(Object.keys(this.posibilities)[0], 'left');
-                }
-                if (typeof this.neighbors.right === 'object' && this.neighbors.left.collapsed === false) {
-                    this.neighbors.right.updatePosibilities(Object.keys(this.posibilities)[0], 'right');
-                }
-                if (typeof this.neighbors.top === 'object' && this.neighbors.left.collapsed === false) {
-                    this.neighbors.top.updatePosibilities(Object.keys(this.posibilities)[0], 'bottom');
-                }
-                if (typeof this.neighbors.bottom === 'object' && this.neighbors.left.collapsed === false) {
-                    this.neighbors.bottom.updatePosibilities(Object.keys(this.posibilities)[0], 'top');
-                }
-            }
+          
         });
-    }
-
-    cyclePositionTexture() {
-        app.ticker.add(() => {
-            if (this.cyclePositions) {
-                let deltaTime = app.ticker.elapsedMS ? app.ticker.elapsedMS : 0;
-                if (this.cyclePositionTimer + deltaTime > 200) {
-                    this.cyclePositionTimer = ( this.cyclePositionTimer + deltaTime ) % 200;
-                    this.cyclePositionIndex = (this.cyclePositionIndex + 1) % ( this.posibilitiesArray.length - 1);
-                    this.texture = this.posibilitiesArray[this.cyclePositionIndex].texture;
-                } else {
-                    this.cyclePositionTimer += deltaTime;
-                }
-            }
-        });
-    }
-    
-    updatePosibilities(name, direction) {
-        console.log(name, direction)
-        this.cyclePositions = false;
-        let collapsed = {...this.posibilities};
-        for (let state in this.posibilities) {
-            let posibility = collapsed[state];
-            console.log(posibility, posibility.rules, posibility.rules[direction][name])
-            if (
-                posibility.rules[direction][name] !== true
-                || ( 
-                    posibility.rules[direction][name] === undefined 
-                    && posibility.autoAccept !== true
-                )
-            ) {
-                delete collapsed[state];
-            }
-        }
-        if (collapsed.length !== this.posibilitiesArray.length) {
-            console.log(collapsed)
-            this.posibilities = collapsed;
-            this.posibilitiesArray = Object.values(collapsed);
-        }
-        console.log(this.posibilitiesArray)
-        this.cyclePositionIndex = Math.floor(Math.random() * (Object.values(collapsed).length - 1));
-        console.log(this.cyclePositionIndex)
-        this.cyclePositions = true;
+        this.on('pointerover', () => {
+            this.tint = 0xc8f542;
+        })
+        this.on('pointerout', () => {
+            this.tint = 0xffffff;
+        })
     }
 }
-let log = 0;
-app.ticker.add((...args) => {
-    if (log < 5) console.log(app.ticker.elapsedMS)
-    log += 1;
-});
+
 // Do stuff when everything is loaded.
 app.loader.load((loader, resources) => {
     let states = {
