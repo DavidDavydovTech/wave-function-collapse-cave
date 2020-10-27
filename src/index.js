@@ -34,6 +34,8 @@ class QuantumTile extends PIXI.Sprite {
         this.states = tileOptions.states;
         this.posibilities = {...this.states};
         this.posibilitiesArray = Object.values(this.states);
+
+        // CyclePositions
         this.cyclePositions = true;
         this.cyclePositionTimer = 0;
         this.cyclePositionIndex = Math.floor(Math.random() * (this.posibilitiesArray.length - 1));
@@ -42,13 +44,15 @@ class QuantumTile extends PIXI.Sprite {
 
     cyclePositionTexture() {
         app.ticker.add(() => {
-            let deltaTime = app.ticker.elapsedMS ? app.ticker.elapsedMS : 0;
-            if (this.cyclePositionTimer + deltaTime > 200) {
-                this.cyclePositionTimer = ( this.cyclePositionTimer + deltaTime ) % 200;
-                this.cyclePositionIndex = (this.cyclePositionIndex + 1) % ( this.posibilitiesArray.length - 1);
-                this.texture = this.posibilitiesArray[this.cyclePositionIndex].texture;
-            } else {
-                this.cyclePositionTimer += deltaTime;
+            if (this.cyclePositions) {
+                let deltaTime = app.ticker.elapsedMS ? app.ticker.elapsedMS : 0;
+                if (this.cyclePositionTimer + deltaTime > 200) {
+                    this.cyclePositionTimer = ( this.cyclePositionTimer + deltaTime ) % 200;
+                    this.cyclePositionIndex = (this.cyclePositionIndex + 1) % ( this.posibilitiesArray.length - 1);
+                    this.texture = this.posibilitiesArray[this.cyclePositionIndex].texture;
+                } else {
+                    this.cyclePositionTimer += deltaTime;
+                }
             }
         });
     }
