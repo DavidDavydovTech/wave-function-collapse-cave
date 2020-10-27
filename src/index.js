@@ -24,26 +24,29 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST; // Forces pixel art to stay
 app.loader
     .add('tilesheet', 'img/cavesofgallet_tiles.png'); // Main tilesheet.
 
-// Tile Rules:
-
 // Tile Class:
 class QuantumTile extends PIXI.Sprite {
     constructor(texture, tileOptions) {
         super(texture);
 
+        this.cyclePositionTexture = this.cyclePositionTexture.bind(this);
+
         this.states = tileOptions.states;
         this.posibilities = {...this.states};
         this.posibilitiesArray = Object.values(this.states);
-        console.log(this.posibilitiesArray)
         this.cyclePositions = true;
-        this.cyclePositionIndex = 0;
+        this.cyclePositionIndex = Math.floor(Math.random() * (this.posibilitiesArray.length - 1));
+        this.cyclePositionTexture()
     }
 
     cyclePositionTexture() {
         setTimeout(() => {
-            this.texture
-
-        })
+            this.cyclePositionIndex = (this.cyclePositionIndex + 1) % ( this.posibilitiesArray.length - 1);
+            this.texture = this.posibilitiesArray[this.cyclePositionIndex].texture;
+            if (this.cyclePositions) {
+                this.cyclePositionTexture()
+            }
+        }, 200);
     }
 }
 
