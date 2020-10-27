@@ -27,13 +27,25 @@ app.loader
 // Tile Rules:
 
 // Tile Class:
-// class QuantumTile extends PIXI.Sprite {
-//     constructor(texture, tileOptions) {
-//         super(texture);
+class QuantumTile extends PIXI.Sprite {
+    constructor(texture, tileOptions) {
+        super(texture);
 
-        
-//     }
-// }
+        this.states = tileOptions.states;
+        this.posibilities = {...this.states};
+        this.posibilitiesArray = Object.values(this.states);
+        console.log(this.posibilitiesArray)
+        this.cyclePositions = true;
+        this.cyclePositionIndex = 0;
+    }
+
+    cyclePositionTexture() {
+        setTimeout(() => {
+            this.texture
+
+        })
+    }
+}
 
 // Do stuff when everything is loaded.
 app.loader.load((loader, resources) => {
@@ -178,11 +190,22 @@ app.loader.load((loader, resources) => {
         },
     }
 
+    let grid = {};
+    for (let x = 0; x < 10; x += 1) {
+        for (let y = 0; y < 10; y += 1) {
+            grid[`${x}x${y}y`] = new QuantumTile(states.air.texture, {
+                states: states
+            });
+            grid[`${x}x${y}y`].scale.x = 4
+            grid[`${x}x${y}y`].scale.y = 4
+            grid[`${x}x${y}y`].x = x*8*4;
+            grid[`${x}x${y}y`].y = y*8*4;
+            app.stage.addChild(grid[`${x}x${y}y`]);
+        }
+    }
     // let tiles = PIXI.Sprite.from(resources.tilesheet.texture);
     // tiles.scale.x = 4
     // tiles.scale.y = 4
     // tiles.x = 128;
     // tiles.y = 128;
-    app.stage.addChild(tiles);
 });
-
