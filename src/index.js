@@ -35,21 +35,29 @@ class QuantumTile extends PIXI.Sprite {
         this.posibilities = {...this.states};
         this.posibilitiesArray = Object.values(this.states);
         this.cyclePositions = true;
+        this.cyclePositionTimer = 0;
         this.cyclePositionIndex = Math.floor(Math.random() * (this.posibilitiesArray.length - 1));
         this.cyclePositionTexture()
     }
 
     cyclePositionTexture() {
-        setTimeout(() => {
-            this.cyclePositionIndex = (this.cyclePositionIndex + 1) % ( this.posibilitiesArray.length - 1);
-            this.texture = this.posibilitiesArray[this.cyclePositionIndex].texture;
-            if (this.cyclePositions) {
-                this.cyclePositionTexture()
+        app.ticker.add(() => {
+            let deltaTime = app.ticker.elapsedMS ? app.ticker.elapsedMS : 0;
+            if (this.cyclePositionTimer + deltaTime > 200) {
+                this.cyclePositionTimer = ( this.cyclePositionTimer + deltaTime ) % 200;
+                this.cyclePositionIndex = (this.cyclePositionIndex + 1) % ( this.posibilitiesArray.length - 1);
+                this.texture = this.posibilitiesArray[this.cyclePositionIndex].texture;
+            } else {
+                this.cyclePositionTimer += deltaTime;
             }
-        }, 200);
+        });
     }
 }
-
+let log = 0;
+app.ticker.add((...args) => {
+    if (log < 5) console.log(app.ticker.elapsedMS)
+    log += 1;
+});
 // Do stuff when everything is loaded.
 app.loader.load((loader, resources) => {
     let states = {
