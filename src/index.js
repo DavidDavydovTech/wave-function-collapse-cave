@@ -56,6 +56,24 @@ class QuantumTile extends PIXI.Sprite {
             }
         });
     }
+    
+    updatePosibilities(name, direction) {
+        let collapsed = {...this.posibilities}
+        for (let state of this.posibilities) {
+            let posibility = collapsed[state];
+            if (
+                posibility.rules[direction][name] === false
+                || ( 
+                    posibility.rules[direction][name] === undefined 
+                    && posibility.autoAccept === true
+                )
+            ) {
+                delete collapsed[state];
+            }
+        }
+        this.posibilities = collapsed;
+        this.posibilitiesArray = Object.values(collapsed);
+    }
 }
 let log = 0;
 app.ticker.add((...args) => {
