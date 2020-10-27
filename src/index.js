@@ -38,21 +38,51 @@ class State {
 class QuantumTile extends PIXI.Sprite {
     constructor(texture, tileOptions) {
         super(texture);
-
         // Listener
-        this.onCollapse = () => {};
+        // this.onCollapse = () => {};
+        // States
+        this.states = tileOptions.states;
+        this.statesArray = Object.values(this.states);
         // Button-mode
         this.interactive = true;
         this.buttonMode = true;
+        // On click
         this.on('pointerdown', () => {
           
         });
+        // On mouse-over
         this.on('pointerover', () => {
             this.tint = 0xc8f542;
         })
+        // On mouse-out
         this.on('pointerout', () => {
             this.tint = 0xffffff;
         })
+
+        // Method Bindings & Values
+        this.animateSuperPosition = this.animateSuperPosition.bind(this)
+        this.animateSuperPositionInterval = 200;
+        this.animateSuperPositionTimer = 0;
+    }
+
+
+    animateSuperPosition() {
+        const interval = 200;
+        let timer = 0;
+        app.ticker.add(() => {
+            let deltaTime = app.ticker.elapsedMS ? app.ticker.elapsedMS : 0;
+            timer = (timer + deltaTime) % ( interval * (this.statesArray.length - 1) );
+           // if (this.cyclePositions) {
+            //     let deltaTime = app.ticker.elapsedMS ? app.ticker.elapsedMS : 0;
+            //     if (this.cyclePositionTimer + deltaTime > 200) {
+            //         this.cyclePositionTimer = ( this.cyclePositionTimer + deltaTime ) % 200;
+            //         this.cyclePositionIndex = (this.cyclePositionIndex + 1) % ( this.posibilitiesArray.length - 1);
+            //         this.texture = this.posibilitiesArray[this.cyclePositionIndex].texture;
+            //     } else {
+            //         this.cyclePositionTimer += deltaTime;
+            //     }
+            // }
+        });
     }
 }
 
