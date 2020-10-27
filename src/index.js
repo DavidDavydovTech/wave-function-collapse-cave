@@ -53,12 +53,25 @@ class QuantumTile extends PIXI.Sprite {
                 let i = this.cyclePositionIndex
                 let key = Object.keys(this.posibilities)[i];
                 let chosen = this.posibilities[key];
-                this.posibilities = { key: chosen };
+                this.posibilities = {};
+                this.posibilities[key] = chosen 
                 this.posibilitiesArray = [chosen];
                 this.collapsed = true;
                 this.cyclePositions = false;
                 this.interactive = false;
-                this.onCollapse();
+                this.texture = chosen.texture;
+                if (typeof this.neighbors.left === 'object' && this.neighbors.left.collapsed === false) {
+                    this.neighbors.left.updatePosibilities(Object.keys(this.posibilities)[0], 'left');
+                }
+                if (typeof this.neighbors.right === 'object' && this.neighbors.left.collapsed === false) {
+                    this.neighbors.right.updatePosibilities(Object.keys(this.posibilities)[0], 'right');
+                }
+                if (typeof this.neighbors.top === 'object' && this.neighbors.left.collapsed === false) {
+                    this.neighbors.top.updatePosibilities(Object.keys(this.posibilities)[0], 'bottom');
+                }
+                if (typeof this.neighbors.bottom === 'object' && this.neighbors.left.collapsed === false) {
+                    this.neighbors.bottom.updatePosibilities(Object.keys(this.posibilities)[0], 'top');
+                }
             }
         });
     }
@@ -79,23 +92,31 @@ class QuantumTile extends PIXI.Sprite {
     }
     
     updatePosibilities(name, direction) {
-        let collapsed = {...this.posibilities}
-        for (let state of this.posibilities) {
+        console.log(name, direction)
+        this.cyclePositions = false;
+        let collapsed = {...this.posibilities};
+        for (let state in this.posibilities) {
             let posibility = collapsed[state];
+            console.log(posibility, posibility.rules, posibility.rules[direction][name])
             if (
-                posibility.rules[direction][name] === false
+                posibility.rules[direction][name] !== true
                 || ( 
                     posibility.rules[direction][name] === undefined 
-                    && posibility.autoAccept === false
+                    && posibility.autoAccept !== true
                 )
             ) {
                 delete collapsed[state];
             }
         }
         if (collapsed.length !== this.posibilitiesArray.length) {
+            console.log(collapsed)
             this.posibilities = collapsed;
             this.posibilitiesArray = Object.values(collapsed);
         }
+        console.log(this.posibilitiesArray)
+        this.cyclePositionIndex = Math.floor(Math.random() * (Object.values(collapsed).length - 1));
+        console.log(this.cyclePositionIndex)
+        this.cyclePositions = true;
     }
 }
 let log = 0;
@@ -107,6 +128,7 @@ app.ticker.add((...args) => {
 app.loader.load((loader, resources) => {
     let states = {
         air: {
+            name: 'air',
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,0,8,8)),
             autoAccept: true,
             rules: {
@@ -117,6 +139,7 @@ app.loader.load((loader, resources) => {
             }
         },
         grassTop: {
+            name: 'grassTop',
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(1,1,8,8)),
             autoAccept: false,
             rules: {
@@ -133,6 +156,7 @@ app.loader.load((loader, resources) => {
             }
         },
         grassTopLeft: {
+            name: 'grassTopLeft',
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,8,8,8)),
             autoAccept: false,
             rules: {
@@ -149,6 +173,7 @@ app.loader.load((loader, resources) => {
             }
         },
         grassTopRight: {
+            name: 'grassTopRight',
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,8,8,8), undefined, undefined, 12),
             autoAccept: false,
             rules: {
@@ -165,6 +190,7 @@ app.loader.load((loader, resources) => {
             }
         },
         grassLeft: {
+            name: 'grassLeft',
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,16,8,8)),
             autoAccept: false,
             rules: {
@@ -181,6 +207,7 @@ app.loader.load((loader, resources) => {
             }
         },
         grassRight: {
+            name: 'grassRight',
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,16,8,8), undefined, undefined, 12),
             autoAccept: false,
             rules: {
@@ -197,6 +224,7 @@ app.loader.load((loader, resources) => {
             }
         },
         grassBottom: {
+            name: 'grassBottom',
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(8,24,8,8)),
             autoAccept: false,
             rules: {
@@ -213,6 +241,7 @@ app.loader.load((loader, resources) => {
             }
         },
         grassBottomLeft: {
+            name: 'grassBottomLeft',
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,24,8,8)),
             autoAccept: false,
             rules: {
@@ -229,6 +258,7 @@ app.loader.load((loader, resources) => {
             }
         },
         grassBottomRight: {
+            name: 'grassBottomRight',
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,24,8,8), undefined, undefined, 12),
             autoAccept: false,
             rules: {
