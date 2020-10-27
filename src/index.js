@@ -1,7 +1,7 @@
 import {Application, Sprite} from 'pixi.js';
 
-const SCREEN_WIDTH = 500;
-const SCREEN_HEIGHT = 500;
+const SCREEN_WIDTH = window.innerWidth;
+const SCREEN_HEIGHT = window.innerHeight;
 
 let app = new Application(SCREEN_WIDTH, SCREEN_HEIGHT, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
