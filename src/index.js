@@ -1,10 +1,5 @@
 // import {Application, Sprite, BaseTexture, SCALE_MODES} from 'pixi.js';
 import * as PIXI from 'pixi.js';
-import 'puxi.js';
-const uxStage = new PUXI.Stage({
-    width: 512,
-    height: 512
-  });
 
 const SCREEN_WIDTH = window.innerWidth;
 const SCREEN_HEIGHT = window.innerHeight;

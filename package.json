@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "pixi.js": "^5.0.0-rc.2",
-    "puxi.js": "0.0.5"
+    "webpack-modules": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
