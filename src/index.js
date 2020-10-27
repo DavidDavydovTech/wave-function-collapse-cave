@@ -47,14 +47,18 @@ class QuantumTile extends PIXI.Sprite {
         // General Vars
         this.collapsed = false;
         this.missingTexture = props.missingTexture;
+        this.neighbors = {};
 
         // Method Bindings & Values
         this.animateSuperPosition = this.animateSuperPosition.bind(this)
         this.animateSuperPositionRun = true;
+        this.animateSuperPositionIndex = 0;
         this.animateSuperPosition()
 
         this._initInteractivity = this._initInteractivity.bind(this)
         this._initInteractivity()
+
+        this.updateSuperPositions = this.updateSuperPositions.bind(this);
     }
 
     _initInteractivity() {
@@ -63,11 +67,16 @@ class QuantumTile extends PIXI.Sprite {
         this.buttonMode = true;
         // On click
         this.on('pointerdown', () => {
-            
+            this.collapsed = true;
+            this.tint = 0x2b80c;
+            for (let neighbor of this.neighbors) {
+                let neighborObj = this.neighbors[neighbor];
+                // neighborObj()
+            }
         });
         // On mouse-over
         this.on('pointerover', () => {
-            this.tint = 0xc8f542;
+            this.tint = 0xf2ea0c;
             this.animateSuperPositionRun = false;
         })
         // On mouse-out
@@ -76,6 +85,7 @@ class QuantumTile extends PIXI.Sprite {
             this.animateSuperPositionRun = true;
         })
     }
+
     animateSuperPosition() {
         let interval = 500;
         let timer = 0;
@@ -108,6 +118,19 @@ class QuantumTile extends PIXI.Sprite {
             // }
         });
     }
+
+    updateSuperPositions(neighborStates, reletiveDirection) {
+        const allowed = [];
+        for (let state in neighborStates) {
+            let stateObj = neighborStates[state];
+            let rules = stateObj.rules;
+            let relevantRules = rules[state];
+            for (let rule in relevantRules) {
+                const isAllowed = relevantRules[rule];
+                
+            }
+        }
+    }
 }
 
 // Do stuff when everything is loaded.
@@ -126,7 +149,7 @@ app.loader.load((loader, resources) => {
         },
         grassTop: {
             name: 'grassTop',
-            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(1,1,8,8)),
+            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(8,8,8,8)),
             autoAccept: false,
             rules: {
                 top: {},
@@ -281,38 +304,38 @@ app.loader.load((loader, resources) => {
     }
     console.log(grid)
     // Link grid tiles
-    // for (let x = 0; x < gridSize; x += 1) {
-    //     for (let y = 0; y < gridSize; y += 1) {
-    //         // Left
-    //         if(
-    //             grid[`${x - 1}x${y}y`] !== undefined 
-    //             && grid[`${x - 1}x${y}y`].collapsed === false
-    //         ) {
-    //             grid[`${x}x${y}y`].neighbors.left = grid[`${x - 1}x${y}y`];
-    //         }
-    //         // Right
-    //         if(
-    //             grid[`${x + 1}x${y}y`] !== undefined 
-    //             && grid[`${x + 1}x${y}y`].collapsed === false
-    //         ) {
-    //             grid[`${x}x${y}y`].neighbors.right = grid[`${x + 1}x${y}y`];
-    //         }
-    //         //Above
-    //         if(
-    //             grid[`${x}x${y - 1}y`] !== undefined 
-    //             && grid[`${x}x${y - 1}y`].collapsed === false
-    //         ) {
-    //             grid[`${x}x${y}y`].neighbors.top = grid[`${x}x${y - 1}y`];
-    //         }
-    //         // Bellow
-    //         if(
-    //             grid[`${x}x${y + 1}y`] !== undefined 
-    //             && grid[`${x}x${y + 1}y`].collapsed === false
-    //         ) {
-    //             grid[`${x}x${y}y`].neighbors.bottom = grid[`${x}x${y + 1}y`];
-    //         }
-    //     }
-    // }
+    for (let x = 0; x < gridSize; x += 1) {
+        for (let y = 0; y < gridSize; y += 1) {
+            // Left
+            if(
+                grid[`${x - 1}x${y}y`] !== undefined 
+                && grid[`${x - 1}x${y}y`].collapsed === false
+            ) {
+                grid[`${x}x${y}y`].neighbors.left = grid[`${x - 1}x${y}y`];
+            }
+            // Right
+            if(
+                grid[`${x + 1}x${y}y`] !== undefined 
+                && grid[`${x + 1}x${y}y`].collapsed === false
+            ) {
+                grid[`${x}x${y}y`].neighbors.right = grid[`${x + 1}x${y}y`];
+            }
+            //Above
+            if(
+                grid[`${x}x${y - 1}y`] !== undefined 
+                && grid[`${x}x${y - 1}y`].collapsed === false
+            ) {
+                grid[`${x}x${y}y`].neighbors.top = grid[`${x}x${y - 1}y`];
+            }
+            // Bellow
+            if(
+                grid[`${x}x${y + 1}y`] !== undefined 
+                && grid[`${x}x${y + 1}y`].collapsed === false
+            ) {
+                grid[`${x}x${y}y`].neighbors.bottom = grid[`${x}x${y + 1}y`];
+            }
+        }
+    }
     // let tiles = PIXI.Sprite.from(resources.tilesheet.texture);
     // tiles.scale.x = 4
     // tiles.scale.y = 4
