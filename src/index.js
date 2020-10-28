@@ -96,6 +96,7 @@ class QuantumTile extends PIXI.Sprite {
         for (let direction in this.neighbors) {
             let neighborObj = this.neighbors[direction];
             if (neighborObj instanceof QuantumTile) {
+                console.log(neighborObj, direction)
                 neighborObj.updateSuperPositions({...this.states}, direction)
             }
             // neighborObj()
@@ -125,7 +126,7 @@ class QuantumTile extends PIXI.Sprite {
 
     updateSuperPositions(neighborStates, reletiveDirection) {
         this.tint = 0x32a836;
-        const filtered = {...this.states};
+        let filtered = {...this.states};
 
 
         let direction = null;
@@ -141,20 +142,24 @@ class QuantumTile extends PIXI.Sprite {
             let stateObj = neighborStates[state];
             let rules = stateObj.rules;
             let relevantRules = rules[direction];
+            console.log('Relevent rules: ', relevantRules)
             for (let rule in relevantRules) {
-                const isAllowed = relevantRules[rule];
-                if (isAllowed === false && this.states.hasOwnProperty(stateObj.name)) {
-                    console.log(reletiveDirection, stateObj.name)
-                    delete isAllowed[stateObj.name]
+                const isAllowed = typeof relevantRules[rule] !== 'boolean' 
+                    ? stateObj.autoAccept
+                    : relevantRules[rule];
+                console.log(`Is ${rule} allowed?: `, isAllowed)
+                if (isAllowed !== true && this.states.hasOwnProperty(rule)) {
+                    delete isAllowed[rule]
                 }
             }
         }
-
+        console.log(Object.keys(filtered), Object.keys(this.states))
         if (Object.keys(filtered).length !== Object.keys(this.states).length) {
             this.states = filtered;
             this.statesArray = Object.values(filtered);
         }
         this.tint = 0xffffff;
+        console.log(this.states)
     }
 }
 
