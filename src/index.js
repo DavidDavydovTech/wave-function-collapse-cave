@@ -45,6 +45,7 @@ class QuantumTile extends PIXI.Sprite {
         this.states = props.states;
         this.statesArray = Object.values(this.states);
         // General Vars
+        this._qDebug = props._qDebug;
         this.collapsed = false;
         this.missingTexture = props.missingTexture;
         this.neighbors = {};
@@ -104,7 +105,7 @@ class QuantumTile extends PIXI.Sprite {
 
         // We need to clean-up the tint since removing interactivity stops it from updating properly
         this.tint = 0xffffff;
-        this.interactive = false;
+        // this.interactive = false;
     }
 
     updateNeighbors() {
@@ -139,6 +140,7 @@ class QuantumTile extends PIXI.Sprite {
 
     updateSuperPositions(neighborStates, reletiveDirection) {
         if (this.collapsed) return;
+        this.aspVars.run = false;
         this.tint = 0x32a836;
         let resObj = {...this.states};
 
@@ -151,7 +153,7 @@ class QuantumTile extends PIXI.Sprite {
         //     case 'bottom': direction = 'top'; break;
         //     default: throw new Error(`Got unexpected direction "${reletiveDirection}"`);
         // }
-
+        let allowedArray = [];
         for (let state in neighborStates) {
             let stateObj = neighborStates[state];
             let rules = stateObj.rules;
@@ -162,22 +164,29 @@ class QuantumTile extends PIXI.Sprite {
                 if (isAllowed === undefined) throw new Error(`Tried to find a rule for ${direction}->${rule} but got undefined instead`)
                 // console.log(`Is ${rule} allowed?: `, isAllowed)
                 // console.log(`Does it exist? `, this.states.hasOwnProperty(rule))
-                if (isAllowed !== true && this.states.hasOwnProperty(rule)) {
-                    delete resObj[rule];
+                if (isAllowed === true && this.states.hasOwnProperty(rule)) {
+                    allowedArray.push(rule);
                 }
             }
         }
+
+        Object.keys(this.states).forEach((e) => {
+            if(allowedArray.includes(e)) return;
+            delete resObj[e];
+        })
 
         let resObjKeys = Object.keys(resObj);
         if (resObjKeys.length === 1) {
             let lastState = resObj[resObjKeys[0]];
             this.collapse(lastState);
         } else if (resObjKeys.length < 1) {
+            this.collapsed = true;
+            console.log('WARNING: NO STATE FOUND FOR ', this._qDebug.gridName)
             this.texture = this.missingTexture;
-            this.aspVars.run = false;
-        } else if (resObjKeys.length < Object.keys(resObj).length) {
+        } else {
             this.states = resObj;
             this.statesArray = Object.values(resObj);
+            this.aspVars.run = true;
             this.updateNeighbors();
         }
 
@@ -196,7 +205,7 @@ app.loader.load((loader, resources) => {
                 top: {
                     air: true,
                     grassTopLeft: false,
-                    grassTop: true,
+                    grassTop: false,
                 },
                 left: {
                     air: true,
@@ -205,7 +214,7 @@ app.loader.load((loader, resources) => {
                 },
                 right: {
                     air: true,
-                    grassTopLeft: true,
+                    grassTopLeft: false,
                     grassTop: false,
                 },
                 bottom: {
@@ -265,7 +274,7 @@ app.loader.load((loader, resources) => {
                 bottom: {
                     air: false,
                     grassTopLeft: false,
-                    grassLeft: true,
+                    grassTop: false,
                 },
             }
         },
@@ -372,14 +381,17 @@ app.loader.load((loader, resources) => {
         //     }
         // },
     }
-    const gridSize = 30;
+    const gridSize = 3;
     let grid = {};
     // Populate grid
     for (let x = 0; x < gridSize; x += 1) {
         for (let y = 0; y < gridSize; y += 1) {
             grid[`${x}x${y}y`] = new QuantumTile(states.air.texture, {
                 states,
-                missingTexture: resources.missingTexture.texture
+                missingTexture: resources.missingTexture.texture,
+                _qDebug: {
+                    girdName: `${x}x${y}y`,
+                }
             });
             grid[`${x}x${y}y`].scale.x = 4
             grid[`${x}x${y}y`].scale.y = 4
@@ -391,13 +403,11 @@ app.loader.load((loader, resources) => {
     // Link grid tiles
     for (let x = 0; x < gridSize; x += 1) {
         for (let y = 0; y < gridSize; y += 1) {
-            let added = '';
             // Left
             if(
                 grid[`${x - 1}x${y}y`] !== undefined 
                 && grid[`${x - 1}x${y}y`].collapsed === false
             ) {
-                added += 'left, ';
                 grid[`${x}x${y}y`].neighbors.left = grid[`${x - 1}x${y}y`];
             }
             // Right
@@ -405,7 +415,6 @@ app.loader.load((loader, resources) => {
                 grid[`${x + 1}x${y}y`] !== undefined 
                 && grid[`${x + 1}x${y}y`].collapsed === false
             ) {
-                added += 'right, ';
                 grid[`${x}x${y}y`].neighbors.right = grid[`${x + 1}x${y}y`];
             }
             //Above
@@ -413,7 +422,6 @@ app.loader.load((loader, resources) => {
                 grid[`${x}x${y - 1}y`] !== undefined 
                 && grid[`${x}x${y - 1}y`].collapsed === false
             ) {
-                added += 'top, ';
                 grid[`${x}x${y}y`].neighbors.top = grid[`${x}x${y - 1}y`];
             }
             // Bellow
@@ -421,10 +429,8 @@ app.loader.load((loader, resources) => {
                 grid[`${x}x${y + 1}y`] !== undefined 
                 && grid[`${x}x${y + 1}y`].collapsed === false
             ) {
-                added += 'bottom, ';
                 grid[`${x}x${y}y`].neighbors.bottom = grid[`${x}x${y + 1}y`];
             }
-            console.log(`[${x}x${y}y] has ${added}as neighbors.`)
         }
     }
     // let tiles = PIXI.Sprite.from(resources.tilesheet.texture);
