@@ -59,6 +59,7 @@ class QuantumTile extends PIXI.Sprite {
         }
         this.animateSuperPosition()
 
+        this.updateNeighbors = this.updateNeighbors.bind(this);
         this.collapse = this.collapse.bind(this);
         this.updateSuperPositions = this.updateSuperPositions.bind(this);
 
@@ -99,17 +100,20 @@ class QuantumTile extends PIXI.Sprite {
         this.statesArray = Object.values(this.statesArray);
         this.texture = stateObj.texture;
 
-        for (let direction in this.neighbors) {
-            let neighborObj = this.neighbors[direction];
-            if (neighborObj instanceof QuantumTile) {
-                console.log(neighborObj, direction)
-                neighborObj.updateSuperPositions({...this.states}, direction)
-            }
-            // neighborObj()
-        }
+        this.updateNeighbors();
+
         // We need to clean-up the tint since removing interactivity stops it from updating properly
         this.tint = 0xffffff;
         this.interactive = false;
+    }
+
+    updateNeighbors() {
+        for (let direction in this.neighbors) {
+            let neighborObj = this.neighbors[direction];
+            if (neighborObj instanceof QuantumTile) {
+                neighborObj.updateSuperPositions({...this.states}, direction)
+            }
+        }
     }
 
     animateSuperPosition() {
