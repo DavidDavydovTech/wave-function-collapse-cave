@@ -143,14 +143,14 @@ class QuantumTile extends PIXI.Sprite {
         let resObj = {...this.states};
 
 
-        let direction = null;
-        switch(reletiveDirection) {
-            case 'left': direction = 'right'; break;
-            case 'right': direction = 'left'; break;
-            case 'top': direction = 'bottom'; break;
-            case 'bottom': direction = 'top'; break;
-            default: throw new Error(`Got unexpected direction "${reletiveDirection}"`);
-        }
+        let direction = reletiveDirection;
+        // switch(reletiveDirection) {
+        //     case 'left': direction = 'right'; break;
+        //     case 'right': direction = 'left'; break;
+        //     case 'top': direction = 'bottom'; break;
+        //     case 'bottom': direction = 'top'; break;
+        //     default: throw new Error(`Got unexpected direction "${reletiveDirection}"`);
+        // }
 
         for (let state in neighborStates) {
             let stateObj = neighborStates[state];
@@ -222,7 +222,7 @@ app.loader.load((loader, resources) => {
             rules: {
                 top: {
                     air: true,
-                    grassTopRight: true,
+                    grassTopLeft: true,
                     grassTop: true,
                 },
                 left: {
@@ -232,33 +232,43 @@ app.loader.load((loader, resources) => {
                 },
                 right: {
                     air: false,
-                    grassTopRight: false,
+                    grassTopLeft: true,
                     grassTop: true,
                 },
                 bottom: {
                     air: true,
-                    grassTopRight: false,
+                    grassTopLeft: true,
                     grassTop: false,
                 },
             }
         },
-        // grassTopLeft: {
-        //     name: 'grassTopLeft',
-        //     texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,8,8,8)),
-        //     autoAccept: false,
-        //     rules: {
-        //         top: {},
-        //         left: {},
-        //         right: {
-        //             air: false,
-        //             grassTop: true,
-        //         },
-        //         bottom: {
-        //             air: false,
-        //             grassLeft: true,
-        //         },
-        //     }
-        // },
+        grassTopLeft: {
+            name: 'grassTopLeft',
+            texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,8,8,8)),
+            autoAccept: false,
+            rules: {
+                top: {
+                    air: true,
+                    grassTopLeft: false,
+                    grassTop: false,
+                },
+                left: {
+                    air: true,
+                    grassTopLeft: false,
+                    grassTop: false,
+                },
+                right: {
+                    air: false,
+                    grassTopLeft: false,
+                    grassTop: true,
+                },
+                bottom: {
+                    air: false,
+                    grassTopLeft: false,
+                    grassLeft: true,
+                },
+            }
+        },
         // grassTopRight: {
         //     name: 'grassTopRight',
         //     texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,8,8,8), undefined, undefined, 12),
