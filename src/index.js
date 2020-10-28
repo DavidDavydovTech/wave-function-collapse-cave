@@ -173,9 +173,13 @@ class QuantumTile extends PIXI.Sprite {
         if (resObjKeys.length === 1) {
             let lastState = resObj[resObjKeys[0]];
             this.collapse(lastState);
+        } else if (resObjKeys.length < 1) {
+            this.texture = this.missingTexture;
+            this.aspVars.run = false;
         } else if (resObjKeys.length < Object.keys(resObj).length) {
             this.states = resObj;
             this.statesArray = Object.values(resObj);
+            this.updateNeighbors();
         }
 
         this.tint = 0xffffff;
@@ -190,10 +194,26 @@ app.loader.load((loader, resources) => {
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(0,0,8,8)),
             autoAccept: true,
             rules: {
-                top: {},
-                left: {},
-                right: {},
-                bottom: {},
+                top: {
+                    air: true,
+                    grassTopLeft: false,
+                    grassTop: true,
+                },
+                left: {
+                    air: true,
+                    grassTopLeft: false,
+                    grassTop: false,
+                },
+                right: {
+                    air: true,
+                    grassTopLeft: true,
+                    grassTop: false,
+                },
+                bottom: {
+                    air: true,
+                    grassTopLeft: true,
+                    grassTop: true,
+                },
             }
         },
         grassTop: {
@@ -201,7 +221,11 @@ app.loader.load((loader, resources) => {
             texture: new PIXI.Texture(resources.tilesheet.texture, new PIXI.Rectangle(8,8,8,8)),
             autoAccept: false,
             rules: {
-                top: {},
+                top: {
+                    air: true,
+                    grassTopRight: true,
+                    grassTop: true,
+                },
                 left: {
                     air: false,
                     grassTopLeft: true,
@@ -209,10 +233,14 @@ app.loader.load((loader, resources) => {
                 },
                 right: {
                     air: false,
-                    grassTopRight: true,
+                    grassTopRight: false,
                     grassTop: true,
                 },
-                bottom: {},
+                bottom: {
+                    air: true,
+                    grassTopRight: false,
+                    grassTop: false,
+                },
             }
         },
         // grassTopLeft: {
