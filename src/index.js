@@ -51,8 +51,12 @@ class QuantumTile extends PIXI.Sprite {
 
         // Method Bindings & Values
         this.animateSuperPosition = this.animateSuperPosition.bind(this)
-        this.animateSuperPositionRun = true;
-        this.animateSuperPositionIndex = 0;
+        this.aspVars = {
+            run: true,
+            index: 0,
+            timer: 0,
+            interval: 500,
+        }
         this.animateSuperPosition()
 
         this.collapse = this.collapse.bind(this);
@@ -63,30 +67,25 @@ class QuantumTile extends PIXI.Sprite {
     }
 
     _initInteractivity() {
+        const { aspVars } = this;
         // Button-mode
         this.interactive = true;
         this.buttonMode = true;
         // On click
         this.on('pointerdown', () => {
-            this.collapsed = true;
+            let targetState = this.statesArray[aspVars.index % this.statesArray.length]
+            this.collapse(targetState);
             this.tint = 0x2b80c;
-            for (let direction in this.neighbors) {
-                let neighborObj = this.neighbors[direction];
-                if (neighborObj instanceof QuantumTile) {
-                    neighborObj.updateSuperPositions({...this.states}, direction)
-                }
-                // neighborObj()
-            }
         });
         // On mouse-over
         this.on('pointerover', () => {
             this.tint = 0xf2ea0c;
-            this.animateSuperPositionRun = false;
+            this.aspVars.run = false;
         })
         // On mouse-out
         this.on('pointerout', () => {
             this.tint = 0xffffff;
-            this.animateSuperPositionRun = true;
+            this.aspVars.run = true;
         })
     }
 
@@ -94,21 +93,27 @@ class QuantumTile extends PIXI.Sprite {
         this.states = { [stateObj.name]: stateObj }
         this.statesArray = Object.values(this.statesArray);
         this.collapsed = true;
+        for (let direction in this.neighbors) {
+            let neighborObj = this.neighbors[direction];
+            if (neighborObj instanceof QuantumTile) {
+                neighborObj.updateSuperPositions({...this.states}, direction)
+            }
+            // neighborObj()
+        }
     }
 
     animateSuperPosition() {
-        let interval = 500;
-        let timer = 0;
-        let index = Math.floor(Math.random() * this.statesArray.length);
+        const { aspVars } = this;
+        aspVars.index = Math.floor(Math.random() * this.statesArray.length);
         app.ticker.add(() => {
-            if (this.animateSuperPositionRun === true && this.collapsed === false) {
+            if (aspVars.run === true && this.collapsed === false) {
                 let deltaTime = app.ticker.elapsedMS ? app.ticker.elapsedMS : 0;
-                timer += deltaTime;
-                if (timer > interval) {
-                    timer = timer % interval;
-                    index += 1;
+                aspVars.timer += deltaTime;
+                if (aspVars.timer > aspVars.interval) {
+                    aspVars.timer = aspVars.timer % aspVars.interval;
+                    aspVars.index += 1;
                     if (this.statesArray.length > 0) {
-                        let calculatedIndex = index % this.statesArray.length;
+                        let calculatedIndex = aspVars.index % this.statesArray.length;
                         this.texture = this.statesArray[calculatedIndex].texture;
                     } else {
                         this.texture = this.missingTexture;
