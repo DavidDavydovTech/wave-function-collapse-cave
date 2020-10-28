@@ -125,8 +125,9 @@ class QuantumTile extends PIXI.Sprite {
     }
 
     updateSuperPositions(neighborStates, reletiveDirection) {
+        if (this.collapsed) return;
         this.tint = 0x32a836;
-        let filtered = {...this.states};
+        let resObj = {...this.states};
 
 
         let direction = null;
@@ -142,24 +143,29 @@ class QuantumTile extends PIXI.Sprite {
             let stateObj = neighborStates[state];
             let rules = stateObj.rules;
             let relevantRules = rules[direction];
-            console.log('Relevent rules: ', relevantRules)
+            // console.log('Relevent rules: ', relevantRules)
             for (let rule in relevantRules) {
                 const isAllowed = typeof relevantRules[rule] !== 'boolean' 
                     ? stateObj.autoAccept
                     : relevantRules[rule];
-                console.log(`Is ${rule} allowed?: `, isAllowed)
+                // console.log(`Is ${rule} allowed?: `, isAllowed)
+                // console.log(`Does it exist? `, this.states.hasOwnProperty(rule))
                 if (isAllowed !== true && this.states.hasOwnProperty(rule)) {
-                    delete isAllowed[rule]
+                    delete resObj[rule];
                 }
             }
         }
-        console.log(Object.keys(filtered), Object.keys(this.states))
-        if (Object.keys(filtered).length !== Object.keys(this.states).length) {
-            this.states = filtered;
-            this.statesArray = Object.values(filtered);
+
+        let resObjKeys = Object.keys(resObj);
+        if (resObjKeys.length === 1) {
+            let lastState = resObj[resObjKeys[0]];
+            this.collapse(lastState);
+        } else if (resObjKeys.length < Object.keys(resObj).length) {
+            this.states = resObj;
+            this.statesArray = Object.values(resObj);
         }
+
         this.tint = 0xffffff;
-        console.log(this.states)
     }
 }
 
