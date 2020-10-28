@@ -55,10 +55,10 @@ class QuantumTile extends PIXI.Sprite {
         this.animateSuperPositionIndex = 0;
         this.animateSuperPosition()
 
-        this._initInteractivity = this._initInteractivity.bind(this)
-        this._initInteractivity()
-
         this.updateSuperPositions = this.updateSuperPositions.bind(this);
+
+        this._initInteractivity = this._initInteractivity.bind(this)
+        this._initInteractivity();
     }
 
     _initInteractivity() {
@@ -69,8 +69,11 @@ class QuantumTile extends PIXI.Sprite {
         this.on('pointerdown', () => {
             this.collapsed = true;
             this.tint = 0x2b80c;
-            for (let neighbor of this.neighbors) {
-                let neighborObj = this.neighbors[neighbor];
+            for (let direction in this.neighbors) {
+                let neighborObj = this.neighbors[direction];
+                if (neighborObj instanceof QuantumTile) {
+                    neighborObj.updateSuperPositions({...this.states}, direction)
+                }
                 // neighborObj()
             }
         });
@@ -100,34 +103,25 @@ class QuantumTile extends PIXI.Sprite {
                     if (this.statesArray.length > 0) {
                         let calculatedIndex = index % this.statesArray.length;
                         this.texture = this.statesArray[calculatedIndex].texture;
-                        console.log(this.statesArray[calculatedIndex].texture)
                     } else {
                         this.texture = this.missingTexture;
                     }
                 }
             }
-           // if (this.cyclePositions) {
-            //     let deltaTime = app.ticker.elapsedMS ? app.ticker.elapsedMS : 0;
-            //     if (this.cyclePositionTimer + deltaTime > 200) {
-            //         this.cyclePositionTimer = ( this.cyclePositionTimer + deltaTime ) % 200;
-            //         this.cyclePositionIndex = (this.cyclePositionIndex + 1) % ( this.posibilitiesArray.length - 1);
-            //         this.texture = this.posibilitiesArray[this.cyclePositionIndex].texture;
-            //     } else {
-            //         this.cyclePositionTimer += deltaTime;
-            //     }
-            // }
         });
     }
 
     updateSuperPositions(neighborStates, reletiveDirection) {
         const allowed = [];
+        console.log('States: ', neighborStates, '\nrelativeeDirection: ', reletiveDirection)
         for (let state in neighborStates) {
+            console.log(neighborStates)
             let stateObj = neighborStates[state];
             let rules = stateObj.rules;
             let relevantRules = rules[state];
             for (let rule in relevantRules) {
                 const isAllowed = relevantRules[rule];
-                
+                // if (isAllowed) {console.log(stateObj.name)}
             }
         }
     }
