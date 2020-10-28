@@ -125,14 +125,26 @@ class QuantumTile extends PIXI.Sprite {
 
     updateSuperPositions(neighborStates, reletiveDirection) {
         const allowed = [];
+
+        let direction = null;
+        switch(reletiveDirection) {
+            case 'left': direction = 'right'; break;
+            case 'right': direction = 'left'; break;
+            case 'top': direction = 'bottom'; break;
+            case 'bottom': direction = 'top'; break;
+            default: throw new Error(`Got unexpected direction "${reletiveDirection}"`)
+        }
+
         console.log('States: ', neighborStates, '\nrelativeeDirection: ', reletiveDirection)
         for (let state in neighborStates) {
+            console.log(state)
             let stateObj = neighborStates[state];
             let rules = stateObj.rules;
-            let relevantRules = rules[state];
+            console.log(rules)
+            let relevantRules = rules[direction];
             for (let rule in relevantRules) {
                 const isAllowed = relevantRules[rule];
-                // if (isAllowed) {console.log(stateObj.name)}
+                if (isAllowed) {console.log(stateObj.name)}
             }
         }
     }
