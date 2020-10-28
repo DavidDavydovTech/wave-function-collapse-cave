@@ -77,6 +77,10 @@ class QuantumTile extends PIXI.Sprite {
             this.collapse(targetState);
             this.tint = 0x2b80c;
         });
+        // On click clean-up
+        // this.on('pointerup', () => {
+        //     this.tint = 0xffffff;
+        // });
         // On mouse-over
         this.on('pointerover', () => {
             this.tint = 0xf2ea0c;
@@ -90,9 +94,11 @@ class QuantumTile extends PIXI.Sprite {
     }
 
     collapse(stateObj) {
+        this.collapsed = true;
         this.states = { [stateObj.name]: stateObj }
         this.statesArray = Object.values(this.statesArray);
-        this.collapsed = true;
+        this.texture = stateObj.texture;
+
         for (let direction in this.neighbors) {
             let neighborObj = this.neighbors[direction];
             if (neighborObj instanceof QuantumTile) {
@@ -101,6 +107,9 @@ class QuantumTile extends PIXI.Sprite {
             }
             // neighborObj()
         }
+        // We need to clean-up the tint since removing interactivity stops it from updating properly
+        this.tint = 0xffffff;
+        this.interactive = false;
     }
 
     animateSuperPosition() {
