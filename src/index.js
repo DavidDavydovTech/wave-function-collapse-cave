@@ -158,9 +158,8 @@ class QuantumTile extends PIXI.Sprite {
             let relevantRules = rules[direction];
             // console.log('Relevent rules: ', relevantRules)
             for (let rule in relevantRules) {
-                const isAllowed = typeof relevantRules[rule] !== 'boolean' 
-                    ? stateObj.autoAccept
-                    : relevantRules[rule];
+                const isAllowed = relevantRules[rule];
+                if (isAllowed === undefined) throw new Error(`Tried to find a rule for ${direction}->${rule} but got undefined instead`)
                 // console.log(`Is ${rule} allowed?: `, isAllowed)
                 // console.log(`Does it exist? `, this.states.hasOwnProperty(rule))
                 if (isAllowed !== true && this.states.hasOwnProperty(rule)) {
@@ -363,7 +362,7 @@ app.loader.load((loader, resources) => {
         //     }
         // },
     }
-    const gridSize = 2;
+    const gridSize = 30;
     let grid = {};
     // Populate grid
     for (let x = 0; x < gridSize; x += 1) {
@@ -379,15 +378,16 @@ app.loader.load((loader, resources) => {
             app.stage.addChild(grid[`${x}x${y}y`]);
         }
     }
-    console.log(grid)
     // Link grid tiles
     for (let x = 0; x < gridSize; x += 1) {
         for (let y = 0; y < gridSize; y += 1) {
+            let added = '';
             // Left
             if(
                 grid[`${x - 1}x${y}y`] !== undefined 
                 && grid[`${x - 1}x${y}y`].collapsed === false
             ) {
+                added += 'left, ';
                 grid[`${x}x${y}y`].neighbors.left = grid[`${x - 1}x${y}y`];
             }
             // Right
@@ -395,6 +395,7 @@ app.loader.load((loader, resources) => {
                 grid[`${x + 1}x${y}y`] !== undefined 
                 && grid[`${x + 1}x${y}y`].collapsed === false
             ) {
+                added += 'right, ';
                 grid[`${x}x${y}y`].neighbors.right = grid[`${x + 1}x${y}y`];
             }
             //Above
@@ -402,6 +403,7 @@ app.loader.load((loader, resources) => {
                 grid[`${x}x${y - 1}y`] !== undefined 
                 && grid[`${x}x${y - 1}y`].collapsed === false
             ) {
+                added += 'top, ';
                 grid[`${x}x${y}y`].neighbors.top = grid[`${x}x${y - 1}y`];
             }
             // Bellow
@@ -409,8 +411,10 @@ app.loader.load((loader, resources) => {
                 grid[`${x}x${y + 1}y`] !== undefined 
                 && grid[`${x}x${y + 1}y`].collapsed === false
             ) {
+                added += 'bottom, ';
                 grid[`${x}x${y}y`].neighbors.bottom = grid[`${x}x${y + 1}y`];
             }
+            console.log(`[${x}x${y}y] has ${added}as neighbors.`)
         }
     }
     // let tiles = PIXI.Sprite.from(resources.tilesheet.texture);
