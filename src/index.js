@@ -55,6 +55,7 @@ class QuantumTile extends PIXI.Sprite {
         this.animateSuperPositionIndex = 0;
         this.animateSuperPosition()
 
+        this.collapse = this.collapse.bind(this);
         this.updateSuperPositions = this.updateSuperPositions.bind(this);
 
         this._initInteractivity = this._initInteractivity.bind(this)
@@ -89,6 +90,12 @@ class QuantumTile extends PIXI.Sprite {
         })
     }
 
+    collapse(stateObj) {
+        this.states = { [stateObj.name]: stateObj }
+        this.statesArray = Object.values(this.statesArray);
+        this.collapsed = true;
+    }
+
     animateSuperPosition() {
         let interval = 500;
         let timer = 0;
@@ -115,7 +122,6 @@ class QuantumTile extends PIXI.Sprite {
         const allowed = [];
         console.log('States: ', neighborStates, '\nrelativeeDirection: ', reletiveDirection)
         for (let state in neighborStates) {
-            console.log(neighborStates)
             let stateObj = neighborStates[state];
             let rules = stateObj.rules;
             let relevantRules = rules[state];
